@@ -63,29 +63,20 @@ namespace SuDokuSolver.Solver
 
                 newUniqueOptionsGenerated = ApplyUniqueOptions(board, OptionsMatrix);
 
-                OptionsMatrix = board.GenerateOptionsMatrix(MasterOptionsMatrix);
-
-                //Game should return lost - if, in the process of updating the Options matrix, and cells are left with zero options (check)
-                if (OptionsMatrixContainsBlanks(board, OptionsMatrix))
-                    return SuDokuGameResult.Loss;
+                if (newUniqueOptionsGenerated)
+                    continue;
 
                 if (CheckForSingleValuesInRows(board, OptionsMatrix))
                     newUniqueOptionsGenerated = true;
 
-                OptionsMatrix = board.GenerateOptionsMatrix(MasterOptionsMatrix);
-
-                //Game should return lost - if, in the process of updating the Options matrix, and cells are left with zero options (check)
-                if (OptionsMatrixContainsBlanks(board, OptionsMatrix))
-                    return SuDokuGameResult.Loss;
+                if (newUniqueOptionsGenerated)
+                    continue;
 
                 if (CheckForSingleValuesInCols(board, OptionsMatrix))
                     newUniqueOptionsGenerated = true;
 
-                OptionsMatrix = board.GenerateOptionsMatrix(MasterOptionsMatrix);
-
-                //Game should return lost - if, in the process of updating the Options matrix, and cells are left with zero options (check)
-                if (OptionsMatrixContainsBlanks(board, OptionsMatrix))
-                    return SuDokuGameResult.Loss;
+                if (newUniqueOptionsGenerated)
+                    continue;
 
                 if (CheckForSingleValuesInSquare(board, OptionsMatrix))
                     newUniqueOptionsGenerated = true;
@@ -114,22 +105,16 @@ namespace SuDokuSolver.Solver
                 {
                     Options[i, j] = new List<int>();
 
-                    /*if (board[i, j] != 0)
-                    {
-                        Options[i, j].Add(board[i, j]);
-                        continue;
-                    }*/
-
                     for (int k = 1; k < 10; k++)
                     {
                         if (board.IsNotInRow(k, i))
                             if (board.IsNotInColumn(k, j))
                                 if (board.IsNotInSquare(k, i, j))
-                                    //don't include a number that is known to give a loss
-                                    if (MasterOptionsMatrix == null || MasterOptionsMatrix[i, j] == null || MasterOptionsMatrix[i, j].Where(x => x.Number == k).First().Result != SuDokuGameResult.Loss)
-                                            //if value is not already set in the board
-                                            if (board[i, j] == 0)
-                                                Options[i, j].Add(k);
+                                    //if value is not already set in the board
+                                    if (board[i, j] == 0)
+                                        //don't include a number that is known to give a loss
+                                        if (MasterOptionsMatrix == null || MasterOptionsMatrix[i, j] == null || MasterOptionsMatrix[i, j].Where(x => x.Number == k).First().Result != SuDokuGameResult.Loss)
+                                            Options[i, j].Add(k);
                     }
                 }
             }
@@ -206,8 +191,6 @@ namespace SuDokuSolver.Solver
         /// <returns>TRUE if any new unique options were applied, FALSE otherwise</returns>
         private static bool ApplyUniqueOptions(int[,] board, List<int>[,] Options)
         {
-            bool newUniques = false;
-
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
                     if (board[i, j] == 0)
@@ -215,10 +198,10 @@ namespace SuDokuSolver.Solver
                         {
                             board[i, j] = Options[i, j][0];
                             Debug.WriteLine($"({i},{j}) set to {board[i, j]}: Unique Option");
-                            newUniques = true;
+                            return true;
                         }
 
-            return newUniques;
+            return false;
         }
 
         /// <summary>
@@ -229,8 +212,6 @@ namespace SuDokuSolver.Solver
         /// <returns>TRUE if any new values were applied from the rows, FALSE otherwise</returns>
         private static bool CheckForSingleValuesInRows(int[,] board, List<int>[,] Options)
         {
-            bool newValues = false;
-
             //for every row
             for (int row = 0; row < 9; row++)
             {
@@ -261,14 +242,14 @@ namespace SuDokuSolver.Solver
                                     board[row, colPosition] = number;
                                     Debug.WriteLine($"({row},{colPosition}) set to {number}: Unique value in row");
                                     //if values have changed, set the update value to TRUE. Allow it to continue for further updates
-                                    newValues = true;
+                                    return true;
                                 }
                         }
                     }
                 }
             }
 
-            return newValues;
+            return false;
         }
 
         /// <summary>
@@ -278,9 +259,7 @@ namespace SuDokuSolver.Solver
         /// <param name="Options">The array of all options from which to apply the update</param>
         /// <returns>TRUE if any new values were applied from the columns, FALSE otherwise</returns>
         private static bool CheckForSingleValuesInCols(int[,] board, List<int>[,] Options)
-        {
-            bool newValues = false;
-
+        { 
             //for every column
             for (int col = 0; col < 9; col++)
             {
@@ -311,14 +290,14 @@ namespace SuDokuSolver.Solver
                                     board[rowPosition, col] = number;
                                     Debug.WriteLine($"({rowPosition},{col}) set to {number}: Unique value in column");
                                     //if values have changed, set the update value to TRUE. Allow it to continue for further updates
-                                    newValues = true;
+                                    return true;
                                 }
                         }
                     }
                 }
             }
 
-            return newValues;
+            return false;
         }
 
         /// <summary>
@@ -329,8 +308,6 @@ namespace SuDokuSolver.Solver
         /// <returns>TRUE if any new values were applied from the squares, FALSE otherwise</returns>
         private static bool CheckForSingleValuesInSquare(int[,] board, List<int>[,] Options)
         {
-            bool newValues = false;
-
             //Go through each square in turn
             for (int square = 0; square < 9; square++)
             {
@@ -368,7 +345,7 @@ namespace SuDokuSolver.Solver
                                     {
                                         board[row, col] = num;
                                         Debug.WriteLine($"({row},{col}) set to {num}: Unique value in square");
-                                        newValues = true;
+                                        return true;
                                     }
                             }
                         }
@@ -376,7 +353,7 @@ namespace SuDokuSolver.Solver
                 }
             }
 
-            return newValues;
+            return false;
         }
 
         /// <summary>

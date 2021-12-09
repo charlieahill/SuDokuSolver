@@ -98,36 +98,26 @@ namespace SuDokuSolver
 
             board[0, 0] = 4;
             board[0, 2] = 6;
+            board[0, 3] = 1;
             board[0, 8] = 3;
             board[1, 1] = 2;
             board[1, 4] = 6;
             board[2, 1] = 9;
             board[2, 6] = 4;
-            board[3, 0] = 2;
-            board[3, 1] = 3;
-            board[3, 2] = 9;
             board[3, 5] = 8;
             board[3, 8] = 1;
             board[4, 1] = 4;
             board[5, 0] = 5;
-            board[5, 1] = 6;
             board[5, 2] = 7;
             board[5, 4] = 9;
             board[5, 6] = 3;
-            board[6, 1] = 5;
-            board[6, 2] = 4;
             board[6, 3] = 9;
             board[6, 7] = 7;
-            board[7, 0] = 9;
-            board[7, 1] = 7;
             board[7, 2] = 2;
-            board[7, 7] = 3;
             board[8, 0] = 6;
             board[8, 2] = 3;
             board[8, 4] = 7;
             board[8, 6] = 5;
-
-
 
             OutputToScreen();
         }
@@ -592,6 +582,7 @@ namespace SuDokuSolver
                 OptionsText += value + ", ";
             }
             Debug.WriteLine($"Cell ({Cell.X}, {Cell.Y}): Options: {OptionsText}");
+            OptionsLabel.Text = $"Cell ({Cell.X}, {Cell.Y}): Options: {OptionsText}";
         }
 
         private Point GetCellPosition(TextBox input)
