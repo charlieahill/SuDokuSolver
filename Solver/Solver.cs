@@ -404,7 +404,7 @@ namespace SuDokuSolver.Solver
 
             //Generate an options matrix
             List<int>[,] OptionsMatrix;
-            OptionsMatrix = board.GenerateOptionsMatrix(null); //todo: Should this be null or masterOptionsMatrix
+            OptionsMatrix = board.GenerateOptionsMatrix(null);
             List<CellOptionModel> CellOptions = OptionsMatrix.ConvertToCellOptionModel();//build up a list of trial results
 
             foreach (CellOptionModel cellOption in CellOptions)
@@ -412,7 +412,7 @@ namespace SuDokuSolver.Solver
                 //reset the board to the original board
                 board = (int[,])InitialBoard.Clone();
                 //Reset the options matrix each time
-                OptionsMatrix = board.GenerateOptionsMatrix(null); //todo: Should this be null or masterOptionsMatrix
+                OptionsMatrix = board.GenerateOptionsMatrix(null);
 
                 board[cellOption.XCoordinate, cellOption.YCoordinate] = cellOption.Value;
                 Debug.WriteLine($"Trying {cellOption.Value} in space ({cellOption.XCoordinate}, {cellOption.YCoordinate})");
