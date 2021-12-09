@@ -63,11 +63,29 @@ namespace SuDokuSolver.Solver
 
                 newUniqueOptionsGenerated = ApplyUniqueOptions(board, OptionsMatrix);
 
+                OptionsMatrix = board.GenerateOptionsMatrix(MasterOptionsMatrix);
+
+                //Game should return lost - if, in the process of updating the Options matrix, and cells are left with zero options (check)
+                if (OptionsMatrixContainsBlanks(board, OptionsMatrix))
+                    return SuDokuGameResult.Loss;
+
                 if (CheckForSingleValuesInRows(board, OptionsMatrix))
                     newUniqueOptionsGenerated = true;
 
+                OptionsMatrix = board.GenerateOptionsMatrix(MasterOptionsMatrix);
+
+                //Game should return lost - if, in the process of updating the Options matrix, and cells are left with zero options (check)
+                if (OptionsMatrixContainsBlanks(board, OptionsMatrix))
+                    return SuDokuGameResult.Loss;
+
                 if (CheckForSingleValuesInCols(board, OptionsMatrix))
                     newUniqueOptionsGenerated = true;
+
+                OptionsMatrix = board.GenerateOptionsMatrix(MasterOptionsMatrix);
+
+                //Game should return lost - if, in the process of updating the Options matrix, and cells are left with zero options (check)
+                if (OptionsMatrixContainsBlanks(board, OptionsMatrix))
+                    return SuDokuGameResult.Loss;
 
                 if (CheckForSingleValuesInSquare(board, OptionsMatrix))
                     newUniqueOptionsGenerated = true;
